@@ -34,81 +34,155 @@ window.preload = function () {
     }
 // -----
 
-  var wall1 = createSprite(190,120,250,3);
-  var wall2 = createSprite(190,260,250,3);
-  var wall3 = createSprite(67,145,3,50);
-  var wall4 = createSprite(67,235,3,50);
-  var wall5 = createSprite(313,145,3,50);
-  var wall6 = createSprite(313,235,3,50);
-  var wall7 = createSprite(41,170,50,3);
-  var wall8 = createSprite(41,210,50,3);
-  var wall9 = createSprite(337,210,50,3);
-  var wall10 = createSprite(337,170,50,3);
-  var wall11 = createSprite(18,190,3,40);
-  var wall12 = createSprite(361,190,3,40);
-  
-  
-  var ding = createSprite(40,190,13,13);
-  ding.shapeColor = "green";
-  
-  var dong1 = createSprite(100,130,10,10);
-  dong1.shapeColor = "red";
-  var dong2 = createSprite(215,130,10,10);
-  dong2.shapeColor = "red";
-  var dong3 = createSprite(165,250,10,10);
-  dong3.shapeColor = "red";
-  var dong4 = createSprite(270,250,10,10);
-  dong4.shapeColor = "red";
-  
-  dong1.velocityY = 8;
-  dong2.velocityY = 8;
-  dong3.velocityY = -8;
-  dong4.velocityY = -8;
-  
-  var count = 0;
-  
-  playSound("assets/sound123.mp3", true);
+//creating plddle and the ball
+var paddle = createSprite(200, 375, 50, 15);
+var ball = createSprite(150, 250, 20, 20);
 
+//first row of boxes
+var box1 = createSprite(25, 75, 50, 50);
+box1.shapeColor="red";
+var box2 = createSprite(75, 75, 50, 50);
+box2.shapeColor="blue";
+var box3 = createSprite(125, 75, 50, 50);
+box3.shapeColor="red";
+var box4 = createSprite(175, 75, 50, 50);
+box4.shapeColor="blue";
+var box5 = createSprite(225, 75, 50, 50);
+box5.shapeColor="red";
+var box6 = createSprite(275, 75, 50, 50);
+box6.shapeColor="blue";
+var box7 = createSprite(325, 75, 50, 50);
+box7.shapeColor="red";
+var box8 = createSprite(375, 75, 50, 50);
+box8.shapeColor="blue";
+
+//second row of boxes
+var box9 = createSprite(25, 125, 50, 50);
+box9.shapeColor="blue";
+var box10 = createSprite(75, 125, 50, 50);
+box10.shapeColor="red";
+var box11 = createSprite(125, 125, 50, 50);
+box11.shapeColor="blue";
+var box12 = createSprite(175, 125, 50, 50);
+box12.shapeColor="red";
+var box13 = createSprite(225, 125, 50, 50);
+box13.shapeColor="blue";
+var box14 = createSprite(275, 125, 50, 50);
+box14.shapeColor="red";
+var box15 = createSprite(325, 125, 50, 50);
+box15.shapeColor="blue";
+var box16 = createSprite(375, 125, 50, 50);
+box16.shapeColor="red";
+ var score=0;
+ var gamestate="serve";
 
 function draw() {
   background("white");
-  text("Deaths: " + count,200,100);
-  strokeWeight(0);
-  fill("lightblue");
-  rect(18,170,52,40);
-  rect(308,170,52,40);
+  textSize(20);
+  text("score"+score,320,30);
+  //Moving the ball on pressing enter key
   
-  dong1.bounceOff(wall1);
-  dong1.bounceOff(wall2);
-  dong2.bounceOff(wall1);
-  dong2.bounceOff(wall2);
-  dong3.bounceOff(wall1);
-  dong3.bounceOff(wall2);
-  dong4.bounceOff(wall1);
-  dong4.bounceOff(wall2);
-  
- 
-  if(keyDown("right")){
-    ding.x = ding.x + 2;
+  if (gamestate=="serve"){
+    fill("black");
+    textSize(30);
+    text("press enter to start", 100, 215);
+    if(keyDown("enter")){
+    ball.velocityX = 3;
+    ball.velocityY = 4;
+    gamestate="play";
   }
-  if(keyDown("left")){
-    ding.x = ding.x - 2;
   }
+  createEdgeSprites();
+  if (gamestate=="play"){
+  //Moving the paddle with mouse along the x-axis
+  paddle.x=World.mouseX;
   
-  if(ding.isTouching(wall11)||
-     ding.isTouching(wall12)||
-     ding.isTouching(dong1)||
-     ding.isTouching(dong2)||
-     ding.isTouching(dong3)||
-     ding.isTouching(dong4))
-  {
-     ding.x = 40;
-     ding.y = 190;
-     count = count + 1;
+  //destroy the boxes when ball touches them
+  if (ball.isTouching(bottomEdge)|| score==16){
+    gamestate="end";
   }
   
- drawSprites();
-}
+  
+  }
+  //Making the ball bounceOff the paddle and three sides of canvas
+  
+  ball.bounceOff(rightEdge);
+  ball.bounceOff(leftEdge);
+  ball.bounceOff(topEdge);
+  ball.bounceOff(paddle);
+  
+  if (gamestate=="end"){
+    fill("red");
+    textSize(25);
+    text("Game over",170,200);
+    
+  }
+  
+  if (ball.isTouching(box1)){
+    box1.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box2)){
+    box2.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box3)){
+    box3.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box4)){
+    box4.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box5)){
+    box5.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box6)){
+    box6.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box7)){
+    box7.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box8)){
+    box8.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box9)){
+    box9.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box10)){
+    box10.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box11)){
+    box11.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box12)){
+    box12.destroy();
+    score=score+1;
+  }if (ball.isTouching(box13)){
+    box13.destroy();
+    score=score+1;
+  }
+ if (ball.isTouching(box14)){
+    box14.destroy();
+    score=score+1;
+  } 
+  if (ball.isTouching(box15)){
+    box15.destroy();
+    score=score+1;
+  }
+  if (ball.isTouching(box16)){
+    box16.destroy();
+    score=score+1;
+  }
+  drawSprites();
+  }
 
 // -----
     try { window.draw = draw; } catch (e) {}
